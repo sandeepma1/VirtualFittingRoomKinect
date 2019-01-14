@@ -104,7 +104,7 @@ namespace OpenPose
             bool enable = true, Vector2Int? netInputSize = null, Vector2Int? outputSize = null,
             ScaleMode keypointScaleMode = ScaleMode.InputResolution,
             int gpuNumber = -1, int gpuNumberStart = 0, int scalesNumber = 1, float scaleGap = 0.3f,
-            RenderMode renderMode = RenderMode.Gpu, PoseModel poseModel = PoseModel.MPI_15_4,
+            RenderMode renderMode = RenderMode.Gpu, PoseModel poseModel = PoseModel.BODY_25,
             bool blendOriginalFrame = true, float alphaKeypoint = 0.6f, float alphaHeatMap = 0.7f,
             int defaultPartToRender = 0, string modelFolder = null,
             HeatMapType heatMapTypes = HeatMapType.None, ScaleMode heatMapScaleMode = ScaleMode.UnsignedChar,

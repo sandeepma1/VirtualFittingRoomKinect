@@ -25,7 +25,7 @@ namespace OpenPose.Example
         [SerializeField] RectTransform LHandRectangle;
         [SerializeField] RectTransform RHandRectangle;
         [SerializeField] RectTransform FaceRectangle;
-        private List<RectTransform> poseJoints = new List<RectTransform>();
+        [SerializeField] List<RectTransform> poseJoints = new List<RectTransform>();
         private List<RectTransform> lHandJoints = new List<RectTransform>();
         private List<RectTransform> rHandJoints = new List<RectTransform>();
         private List<RectTransform> faceJoints = new List<RectTransform>();
@@ -38,7 +38,7 @@ namespace OpenPose.Example
             DrawRectangles(ref datum, bodyIndex);
         }
 
-        private void DrawBody(ref OPDatum datum, int bodyIndex, float scoreThres)
+        public void DrawBody(ref OPDatum datum, int bodyIndex, float scoreThres)
         {
             if (datum.poseKeypoints == null || bodyIndex >= datum.poseKeypoints.GetSize(0))
             {

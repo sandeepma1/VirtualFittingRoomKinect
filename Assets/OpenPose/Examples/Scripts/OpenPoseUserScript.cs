@@ -9,6 +9,7 @@ namespace OpenPose.Example
         // The 2D human to control
         [SerializeField] Transform humanContainer;
         [SerializeField] HumanController2D humanController2D;
+        [SerializeField] ShirtContainer2d shirtContainer2d;
         [SerializeField] ImageRenderer imageRenderer;
         [SerializeField] Text fpsText;
         [SerializeField] Text peopleText;
@@ -32,13 +33,13 @@ namespace OpenPose.Example
         private float avgFrameRate = 0f;
         private float avgFrameTime = -1f;
         private float lastFrameTime = -1f;
-        private HumanController2D humanCont;
+        //private HumanController2D humanCont;
         // Output control
         private OPDatum datum;
 
         private void Start()
         {
-            humanCont = Instantiate(humanController2D, humanContainer);
+            //humanCont = Instantiate(humanController2D, humanContainer);
             print("Start");
             // Register callbacks
             OPWrapper.OPRegisterCallbacks();
@@ -50,13 +51,31 @@ namespace OpenPose.Example
             OPWrapper.OPEnableOutput(true);
             // Enable receiving image (default false)
             OPWrapper.OPEnableImageOutput(renderBgImg);
-            imageRenderer.FadeInOut(renderBgImg);
             // Configure OpenPose with default value, or using specific configuration for each
             /* OPWrapper.OPConfigureAllInDefault(); */
             UserConfigureOpenPose();
 
             // Start OpenPose
             OPWrapper.OPRun();
+        }
+
+        private void Update()
+        {
+            // New data received
+            if (OPWrapper.OPGetOutput(out datum))
+            {
+                shirtContainer2d.DrawBody(ref datum, 0, renderThreshold);
+                imageRenderer.UpdateImage(datum.cvInputData);
+                // Number of people
+                if (showPeopleCount)
+                {
+                    NumberOfPeople();
+                }
+                if (showFPS)
+                {
+                    CalculateFPS();
+                }
+            }
         }
 
         public void ApplyChanges()
@@ -69,7 +88,6 @@ namespace OpenPose.Example
         {
             renderBgImg = !renderBgImg;
             OPWrapper.OPEnableImageOutput(renderBgImg);
-            imageRenderer.FadeInOut(renderBgImg);
         }
 
         private void UserConfigureOpenPose()
@@ -134,36 +152,6 @@ namespace OpenPose.Example
             OPWrapper.OPRun();
         }
 
-        private void Update()
-        {
-            // New data received
-            if (OPWrapper.OPGetOutput(out datum))
-            {
-
-                // Draw human in data
-                int i = 0;
-                humanCont.DrawHuman(ref datum, i++, renderThreshold);
-                //foreach (var human in humanContainer.GetComponentsInChildren<HumanController2D>())
-                //{
-                //    //human.DrawHuman(ref datum, i++, renderThreshold);
-                //    humanCont.DrawHuman(ref datum, i++, renderThreshold);
-                //}
-
-                // Draw image
-                imageRenderer.UpdateImage(datum.cvInputData);
-
-                // Number of people
-                if (showPeopleCount)
-                {
-                    NumberOfPeople();
-                }
-                if (showFPS)
-                {
-                    CalculateFPS();
-                }
-            }
-        }
-
         private void NumberOfPeople()
         {
             if (datum.poseKeypoints == null || datum.poseKeypoints.Empty())
@@ -189,7 +177,7 @@ namespace OpenPose.Example
                 }
             }
             lastFrameTime = Time.time;
-            fpsText.text = " FPS: " + avgFrameRate.ToString("F1");
+            fpsText.text = avgFrameRate.ToString("F1");
         }
     }
 }

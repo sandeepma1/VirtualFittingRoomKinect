@@ -7,12 +7,11 @@ public class MyWebCamTexture : MonoBehaviour
 {
     public RawImage rawimage;
 
-    void Start()
+    void Awake()
     {
         WebCamTexture webcamTexture = new WebCamTexture();
         rawimage.texture = webcamTexture;
         rawimage.material.mainTexture = webcamTexture;
         webcamTexture.Play();
     }
-
 }
