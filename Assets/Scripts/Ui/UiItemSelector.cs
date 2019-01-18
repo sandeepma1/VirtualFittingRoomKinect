@@ -18,6 +18,7 @@ public class UiItemSelector : MonoBehaviour
         leftButton.onClick.AddListener(OnLeftButtonClick);
         rightButton.onClick.AddListener(OnRightButtonClick);
         totalItems = items.Length - 1;
+        OnRightButtonClick();
     }
 
     private void OnRightButtonClick()

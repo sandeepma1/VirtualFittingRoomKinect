@@ -11,12 +11,12 @@ namespace OpenPose.Example
 	 */
     public class ImageRenderer : MonoBehaviour
     {
-        public int frame;
         [SerializeField] Vector2Int screenSize;
         // Texture to be rendered in image
         private Texture2D texture;
         private RectTransform rectTransform { get { return GetComponent<RectTransform>(); } }
         private RawImage image { get { return GetComponent<RawImage>(); } }
+        int tempWidth, tempHeight;
 
         void Start()
         {
@@ -33,7 +33,14 @@ namespace OpenPose.Example
             //// Unity does not support BGR24 yet, which is the color format in OpenCV.
             //// Here we are using RGB24 as data format, then swap R and B in shader, to maintain the performance.
             int height = data.GetSize(0), width = data.GetSize(1);
-            texture.Resize(width, height, TextureFormat.RGB24, false);
+            if (tempHeight != height || tempHeight != height)
+            {
+                print("setting size");
+                tempHeight = height;
+                tempHeight = height;
+                rectTransform.sizeDelta = new Vector2Int(width, height);
+                texture.Resize(width, height, TextureFormat.RGB24, false);
+            }
             texture.LoadRawTextureData(data.ToArray());
             texture.Apply();
         }

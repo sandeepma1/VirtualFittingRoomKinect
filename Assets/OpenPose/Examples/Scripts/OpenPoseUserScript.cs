@@ -7,7 +7,6 @@ namespace OpenPose.Example
     public class OpenPoseUserScript : MonoBehaviour
     {
         // The 2D human to control
-        [SerializeField] Transform humanContainer;
         [SerializeField] HumanController2D humanController2D;
         [SerializeField] ShirtContainer2d shirtContainer2d;
         [SerializeField] ImageRenderer imageRenderer;
@@ -59,7 +58,7 @@ namespace OpenPose.Example
             OPWrapper.OPRun();
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             // New data received
             if (OPWrapper.OPGetOutput(out datum))
@@ -78,25 +77,13 @@ namespace OpenPose.Example
             }
         }
 
-        public void ApplyChanges()
-        {
-            // Restart OpenPose
-            StartCoroutine(UserRebootOpenPoseCoroutine());
-        }
-
-        public void ToggleRenderBgImg()
-        {
-            renderBgImg = !renderBgImg;
-            OPWrapper.OPEnableImageOutput(renderBgImg);
-        }
-
         private void UserConfigureOpenPose()
         {
             OPWrapper.OPConfigurePose(
                 /* enable */ true, /* netInputSize */ netResolution, /* outputSize */ null,
                 /* keypointScaleMode */ ScaleMode.InputResolution,
                 /* gpuNumber */ -1, /* gpuNumberStart */ 0, /* scalesNumber */ 1, /* scaleGap */ 0.3f,
-                /* renderMode */ RenderMode.Gpu, /* poseModel */ PoseModel.BODY_25,
+                /* renderMode */ RenderMode.Gpu, /* poseModel */ PoseModel.MPI_15_4,
                 /* blendOriginalFrame */ true, /* alphaKeypoint */ 0.6f, /* alphaHeatMap */ 0.7f,
                 /* defaultPartToRender */ 0, /* modelFolder */ null,
                 /* heatMapTypes */ HeatMapType.None, /* heatMapScaleMode */ ScaleMode.UnsignedChar,
@@ -104,52 +91,37 @@ namespace OpenPose.Example
                 /* maximizePositives */ false, /* fpsMax fps_max */ -1.0,
                 /* protoTxtPath */ "", /* caffeModelPath */ "");
 
-            OPWrapper.OPConfigureHand(
-                /* enable */ handEnabled, /* netInputSize */ handResolution,
-                /* scalesNumber */ 1, /* scaleRange */ 0.4f, /* tracking */ false,
-                /* renderMode */ RenderMode.None,
-                /* alphaKeypoint */ 0.6f, /* alphaHeatMap */ 0.7f, /* renderThreshold */ 0.2f);
+            //OPWrapper.OPConfigureHand(
+            //    /* enable */ handEnabled, /* netInputSize */ handResolution,
+            //    /* scalesNumber */ 1, /* scaleRange */ 0.4f, /* tracking */ false,
+            //    /* renderMode */ RenderMode.None,
+            //    /* alphaKeypoint */ 0.6f, /* alphaHeatMap */ 0.7f, /* renderThreshold */ 0.2f);
 
-            OPWrapper.OPConfigureFace(
-                /* enable */ faceEnabled, /* netInputSize */ faceResolution, /* renderMode */ RenderMode.None,
-                /* alphaKeypoint */ 0.6f, /* alphaHeatMap */ 0.7f, /* renderThreshold */ 0.4f);
+            //OPWrapper.OPConfigureFace(
+            //    /* enable */ faceEnabled, /* netInputSize */ faceResolution, /* renderMode */ RenderMode.None,
+            //    /* alphaKeypoint */ 0.6f, /* alphaHeatMap */ 0.7f, /* renderThreshold */ 0.4f);
 
-            OPWrapper.OPConfigureExtra(
-                /* reconstruct3d */ false, /* minViews3d */ -1, /* identification */ false, /* tracking */ -1,
-                /* ikThreads */ 0);
+            //OPWrapper.OPConfigureExtra(
+            //    /* reconstruct3d */ false, /* minViews3d */ -1, /* identification */ false, /* tracking */ -1,
+            //    /* ikThreads */ 0);
 
-            OPWrapper.OPConfigureInput(
-                /* producerType */ inputType, /* producerString */ producerString,
-                /* frameFirst */ 0, /* frameStep */ 1, /* frameLast */ ulong.MaxValue,
-                /* realTimeProcessing */ false, /* frameFlip */ false,
-                /* frameRotate */ 0, /* framesRepeat */ false,
-                /* cameraResolution */ null, /* cameraParameterPath */ null,
-                /* undistortImage */ false, /* numberViews */ -1);
+            //OPWrapper.OPConfigureInput(
+            //    /* producerType */ inputType, /* producerString */ producerString,
+            //    /* frameFirst */ 0, /* frameStep */ 1, /* frameLast */ ulong.MaxValue,
+            //    /* realTimeProcessing */ false, /* frameFlip */ false,
+            //    /* frameRotate */ 0, /* framesRepeat */ false,
+            //    /* cameraResolution */ null, /* cameraParameterPath */ null,
+            //    /* undistortImage */ false, /* numberViews */ -1);
 
-            OPWrapper.OPConfigureOutput(
-                /* verbose */ -1.0, /* writeKeypoint */ "", /* writeKeypointFormat */ DataFormat.Yml,
-                /* writeJson */ "", /* writeCocoJson */ "", /* writeCocoFootJson */ "", /* writeCocoJsonVariant */ 1,
-                /* writeImages */ "", /* writeImagesFormat */ "png", /* writeVideo */ "", /* writeVideoFps */ 30.0,
-                /* writeHeatMaps */ "", /* writeHeatMapsFormat */ "png", /* writeVideo3D */ "",
-                /* writeVideoAdam */ "", /* writeBvh */ "", /* udpHost */ "", /* udpPort */ "8051");
+            //OPWrapper.OPConfigureOutput(
+            //    /* verbose */ -1.0, /* writeKeypoint */ "", /* writeKeypointFormat */ DataFormat.Yml,
+            //    /* writeJson */ "", /* writeCocoJson */ "", /* writeCocoFootJson */ "", /* writeCocoJsonVariant */ 1,
+            //    /* writeImages */ "", /* writeImagesFormat */ "png", /* writeVideo */ "", /* writeVideoFps */ 30.0,
+            //    /* writeHeatMaps */ "", /* writeHeatMapsFormat */ "png", /* writeVideo3D */ "",
+            //    /* writeVideoAdam */ "", /* writeBvh */ "", /* udpHost */ "", /* udpPort */ "8051");
 
-            OPWrapper.OPConfigureGui(
-                /* displayMode */ DisplayMode.NoDisplay, /* guiVerbose */ false, /* fullScreen */ false);
-        }
-
-        private IEnumerator UserRebootOpenPoseCoroutine()
-        {
-            if (OPWrapper.state == OPState.None) yield break;
-            // Shutdown if running
-            if (OPWrapper.state == OPState.Running)
-            {
-                OPWrapper.OPShutdown();
-            }
-            // Wait until fully stopped
-            yield return new WaitUntil(() => { return OPWrapper.state == OPState.Ready; });
-            // Configure and start
-            UserConfigureOpenPose();
-            OPWrapper.OPRun();
+            //OPWrapper.OPConfigureGui(
+            //    /* displayMode */ DisplayMode.NoDisplay, /* guiVerbose */ false, /* fullScreen */ false);
         }
 
         private void NumberOfPeople()
