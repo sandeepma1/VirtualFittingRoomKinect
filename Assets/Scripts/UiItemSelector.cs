@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class UiItemSelector : MonoBehaviour
@@ -9,8 +6,8 @@ public class UiItemSelector : MonoBehaviour
     [SerializeField] private float showDistance;
     [SerializeField] private RectTransform previewGo;
     [SerializeField] private Image previewImage;
-    [SerializeField] private Button leftButton;
-    [SerializeField] private Button rightButton;
+    [SerializeField] private UiKinectButton leftButton;
+    [SerializeField] private UiKinectButton rightButton;
     [SerializeField] private Sprite[] items;
     [SerializeField] private float distanceOffset = 2.5f;
     private int currentItemIndex = 0;
@@ -18,8 +15,8 @@ public class UiItemSelector : MonoBehaviour
 
     private void Start()
     {
-        leftButton.onClick.AddListener(OnLeftButtonClick);
-        rightButton.onClick.AddListener(OnRightButtonClick);
+        leftButton.OnButtonClicked += OnLeftButtonClick;
+        rightButton.OnButtonClicked += OnRightButtonClick;
         totalItems = items.Length - 1;
         OnRightButtonClick();
     }

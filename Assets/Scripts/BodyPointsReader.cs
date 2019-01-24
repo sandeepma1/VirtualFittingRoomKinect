@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using Kinect = Windows.Kinect;
 using Windows.Kinect;
+using System;
 
 public class BodyPointsReader : MonoBehaviour
 {
+    public static Action<bool> OnRightHandClicked;
+    public static Action<bool> OnLeftHandClicked;
+
+    [SerializeField] private HandCursor rightHandCursor;
+    [SerializeField] private HandCursor leftHandCursor;
     [SerializeField] private float neckToHipDistance;
     [SerializeField] private UiItemSelector shirtUiSelector;
     [SerializeField] private UiItemSelector pantUiSelector;
@@ -53,6 +59,7 @@ public class BodyPointsReader : MonoBehaviour
         {
             bodyManager._Sensor = KinectSensor.GetDefault();
         }
+
         coordinateMapper = bodyManager._Sensor.CoordinateMapper;
     }
 
@@ -156,6 +163,34 @@ public class BodyPointsReader : MonoBehaviour
             }
             jointObj.localPosition = position;
             CalculateOutfitItems(jt, position);
+            if (jt == JointType.HandRight)
+            {
+                if (body.HandRightConfidence == TrackingConfidence.High && body.HandRightState == HandState.Closed)
+                {
+                    rightHandCursor.IsClicked(position);
+                    OnRightHandClicked?.Invoke(true);
+                }
+                else
+                {
+                    rightHandCursor.IsNotClicked(position);
+                    OnRightHandClicked?.Invoke(false);
+                }
+            }
+
+            if (jt == JointType.HandLeft)
+            {
+                if (body.HandLeftConfidence == TrackingConfidence.High && body.HandLeftState == HandState.Closed)
+                {
+                    leftHandCursor.IsClicked(position);
+                    OnLeftHandClicked?.Invoke(true);
+                }
+                else
+                {
+                    leftHandCursor.IsNotClicked(position);
+                    OnLeftHandClicked?.Invoke(false);
+                }
+            }
+
         }
     }
 
